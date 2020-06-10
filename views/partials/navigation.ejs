@@ -1,0 +1,15 @@
+<div class="backdrop"></div>
+<header>
+    <nav>
+        <div class="nav-wrapper orange">
+            <a href="/" class="brand-logo right"><img src="/img/logo.png"></a>
+            <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <ul id="nav-mobile" class="left hide-on-med-and-down">
+                <%- include('navigation-links.ejs') %>
+            </ul>
+        </div>
+    </nav>
+    <ul class="sidenav" id="mobile-demo">
+        <%- include('navigation-links.ejs') %>
+    </ul>
+</header>

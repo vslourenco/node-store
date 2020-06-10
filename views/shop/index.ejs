@@ -1,0 +1,33 @@
+<%- include('../partials/head.ejs') %>
+</head>
+
+<body>
+    <%- include('../partials/navigation.ejs') %>
+
+    <main class="container">
+        <% if (prods.length > 0) { %>
+            <div class="row">
+                <% for (let product of prods) { %>
+                    <div class="col s12 m4">
+                        <div class="card">
+                            <div class="card-image">
+                                <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+                            </div>
+                            <div class="card-content">
+                                <span class="card-title"><%= product.title %></span>
+                                <h3>$<%= product.price %></h3>
+                                <p><%= product.description %></p>
+                            </div>
+                            <div class="card-action">
+                                <%- include('../partials/add-to-cart.ejs', {product: product}) %>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        <% } else { %>
+            <h1 class="header center orange-text">No Products Found!</h1>
+        <% } %>
+    </main>
+
+<%- include('../partials/end.ejs') %>
