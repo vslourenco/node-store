@@ -11,8 +11,8 @@
                     <li class="collection-item">
                         <div>
                             <form action="/cart-delete-item" method="POST">
-                            <%= p.productData.title %> (<%= p.qty %>)
-                                <input type="hidden" value="<%= p.productData.id %>" name="productId">
+                            <%= p.title %> (<%= p.cart_item.quantity %>)
+                                <input type="hidden" value="<%= p.id %>" name="productId">
                                 <button class="waves-effect btn waves-light red secondary-content" type="submit">
                                     <i class="material-icons left">delete</i>Delete
                                 </button>
@@ -24,6 +24,9 @@
         
                     <% }) %>
                 </ul>
+                <form action="/create-order" method="POST">
+                    <button type="submit" class="btn">Checkout</button>
+                </form>
             <% } else { %>
                 <h1 class="header center blue-text">No Products in Cart!</h1>
             <% } %>

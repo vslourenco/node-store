@@ -3,7 +3,20 @@
 
     <body>
         <%- include('../partials/navigation.ejs') %>
-        <main>
-            <h1>Nothing there!</h1>
+        <main class="container">
+            <% if(orders.length <=0) { %>
+                <h1 class="header center blue-text">No Order Yet!</h1>
+            <% } else { %>
+                <% orders.forEach(order => { %>
+                    <ul class="collection with-header">
+                        <li class="collection-header"><h5>Order #<%= order.id %></h5></li>
+                        <% order.products.forEach(product => { %>
+                            <li class="collection-item">
+                                <i class="material-icons">check</i><%= product.title %> (<%= product.order_item.quantity %>)
+                            </li>
+                        <% }) %>
+                        </ul>
+                <% }) %>
+            <% } %>
         </main>
-        <%- include('../partials/end.ejs') %>
+<%- include('../partials/end.ejs') %>
