@@ -19,7 +19,7 @@
                                 <p><%= product.description %></p>
                             </div>
                             <div class="card-action">
-                                <a class="waves-effect waves-light btn blue" href="/products/<%= product.id %>"><i class="material-icons left">remove_red_eye</i>Details</a>
+                                <a class="waves-effect waves-light btn blue" href="/products/<%= product._id %>"><i class="material-icons left">remove_red_eye</i>Details</a>
                                 <br/><br/>
                                 <%- include('../partials/add-to-cart.ejs', {product: product}) %>
                             </div>
