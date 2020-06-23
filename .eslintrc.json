@@ -18,6 +18,7 @@
         "no-console": "off",
         "no-underscore-dangle": "off",
         "consistent-return": "warn",
-        "max-len": "off"
+        "max-len": "off",
+        "no-param-reassign": ["error", { "props": false }]
     }
 }
