@@ -1,4 +1,6 @@
-<form action="/cart" method="post">
-    <button class="waves-effect waves-light btn blue" type="submit"><i class="material-icons left">add</i>Add to Cart</button>
-    <input type="hidden" name="productId" value="<%= product._id %>">
-</form>
+<% if(isAuthenticated){ %>
+    <form action="/cart" method="post">
+        <button class="waves-effect waves-light btn blue" type="submit"><i class="material-icons left">add</i>Add to Cart</button>
+        <input type="hidden" name="productId" value="<%= product._id %>">
+    </form>
+<% } %>
