@@ -9,3 +9,17 @@ nav .brand-logo img {
 .collection-item > .material-icons{
     font-size: inherit;
 }
+
+.card-alert a{
+    color: inherit;
+    font-weight: 500;
+}
+
+.card-alert .card-content{
+    padding:15px;
+}
+
+.card-alert a:hover{
+    color: inherit;
+    text-decoration: underline;
+}

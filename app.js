@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBSesion = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
+const flashMessage = require('connect-flash');
 
 const errorController = require('./controllers/error');
 
@@ -31,6 +32,8 @@ app.use(session({
   secret: 'my-node-store', resave: false, saveUninitialized: false, store: sessionStore,
 }));
 app.use(csrfProtection);
+app.use(flashMessage());
+
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
   res.locals.csrfToken = req.csrfToken();
