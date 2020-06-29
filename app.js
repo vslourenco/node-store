@@ -5,9 +5,9 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBSesion = require('connect-mongodb-session')(session);
+const csrf = require('csurf');
 
 const errorController = require('./controllers/error');
-const User = require('./models/user');
 
 const MONGODB_URI = 'mongodb+srv://omnistack:omnistack@development-h5m1r.mongodb.net/nodestore?retryWrites=true&w=majority';
 
@@ -16,6 +16,7 @@ const sessionStore = new MongoDBSesion({
   uri: MONGODB_URI,
   collection: 'session',
 });
+const csrfProtection = csrf();
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -29,6 +30,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   secret: 'my-node-store', resave: false, saveUninitialized: false, store: sessionStore,
 }));
+app.use(csrfProtection);
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
@@ -37,18 +44,6 @@ app.use(authRoutes);
 app.use(errorController.get404);
 
 mongoose.connect(MONGODB_URI)
-  .then(() => User.findOne())
-  .then((user) => {
-    if (!user) {
-      const newUser = new User({
-        name: 'Vinicius',
-        email: 'vinicius@mail.com',
-        cart: { items: [] },
-      });
-      return newUser.save();
-    }
-    return Promise.resolve(user);
-  })
   .then(() => {
     app.listen(3000);
   })

@@ -11,6 +11,7 @@
                     <li class="collection-item">
                         <div>
                             <form action="/cart-delete-item" method="POST">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                             <%= p.productId.title %> (Quantity: <%= p.quantity %>)
                                 <input type="hidden" value="<%= p.productId._id %>" name="productId">
                                 <button class="waves-effect btn waves-light red secondary-content" type="submit">
@@ -25,6 +26,7 @@
                     <% }) %>
                 </ul>
                 <form action="/create-order" method="POST">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <button type="submit" class="btn">Checkout</button>
                 </form>
             <% } else { %>

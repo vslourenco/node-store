@@ -20,6 +20,7 @@
                             </div>
                             <div class="card-action">
                                 <form action="/admin/delete-product" method="POST">
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                     <a class="waves-effect waves-light btn blue" href="/admin/edit-product/<%= product._id %>?edit=true"><i class="material-icons left">edit</i>Edit</a>
                                     <input type="hidden" value="<%= product._id %>" name="productId">
                                     <button class="waves-effect waves-light btn red" type="submit"><i class="material-icons left">delete</i>Delete</button>

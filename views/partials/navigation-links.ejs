@@ -1,29 +1,33 @@
-<li>
-    <a class="<%= path === '/' ? 'active' : '' %>" href="/">Shop</a>
+<li class="<%= path === '/' ? 'active' : '' %>">
+    <a href="/">Shop</a>
 </li>
-<li>
-    <a class="<%= path === '/products' ? 'active' : '' %>" href="/products">Products</a>
+<li class="<%= path === '/products' ? 'active' : '' %>">
+    <a href="/products">Products</a>
 </li>
 <% if(isAuthenticated){ %>
-    <li>
-        <a class="<%= path === '/cart' ? 'active' : '' %>" href="/cart">Cart</a>
+    <li class="<%= path === '/cart' ? 'active' : '' %>">
+        <a href="/cart">Cart</a>
     </li>
-    <li>
-        <a class="<%= path === '/orders' ? 'active' : '' %>" href="/orders">Orders</a>
+    <li class="<%= path === '/orders' ? 'active' : '' %>">
+        <a href="/orders">Orders</a>
     </li>
-    <li>
-        <a class="<%= path === '/admin/add-product' ? 'active' : '' %>" href="/admin/add-product">Add Product</a>
+    <li class="<%= path === '/admin/add-product' ? 'active' : '' %>">
+        <a href="/admin/add-product">Add Product</a>
     </li>
-    <li>
-        <a class="<%= path === '/admin/products' ? 'active' : '' %>" href="/admin/products">Admin Products</a>
+    <li class="<%= path === '/admin/products' ? 'active' : '' %>">
+        <a href="/admin/products">Admin Products</a>
     </li>
     <li>
         <a href="/logout">Logout
         </a>
     </li>
 <% }else{ %>
-    <li>
-        <a class="<%= path === '/login' ? 'active' : '' %>" href="/login">Login
+    <li class="<%= path === '/login' ? 'active' : '' %>">
+        <a href="/login">Login
+        </a>
+    </li>
+    <li class="<%= path === '/signup' ? 'active' : '' %>">
+        <a href="/signup">Signup
         </a>
     </li>
 <% } %>
