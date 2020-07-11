@@ -7,6 +7,7 @@ const session = require('express-session');
 const MongoDBSesion = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
 const flashMessage = require('connect-flash');
+const User = require('./models/user');
 
 const errorController = require('./controllers/error');
 
@@ -40,11 +41,39 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  if (!req.session.user) {
+    return next();
+  }
+
+  User.findById(req.session.user)
+    .then((user) => {
+      if (!user) {
+        return next();
+      }
+      req.user = user;
+      return next();
+    })
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
+});
+
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
 app.use(errorController.get404);
+app.use((error, req, res, next) => {
+  res.status(error.httpStatusCode).render('500', {
+    pageTitle: 'Error',
+    path: '/500',
+    errorMessage: error,
+    isAuthenticated: req.session.isLoggedIn,
+  });
+});
 
 mongoose.connect(MONGODB_URI)
   .then(() => {
