@@ -1,0 +1,19 @@
+<div class="row center">
+    <ul class="pagination">
+        <% if (pagination.hasPrevious) { %>
+            <li class="waves-effect">
+                <a href="?page=<%= pagination.currentPage-1 %>"><i class="material-icons">chevron_left</i></a>
+            </li>                    
+        <% } %>
+        <% for(i=1; i<=pagination.pages; i++){ %>
+            <li class="<%= pagination.currentPage === i ? 'active' : '' %>">
+                <a href="?page=<%= i %>"><%= i %></a>
+            </li>
+        <% } %>
+        <% if (pagination.hasNext) { %>
+            <li class="waves-effect">
+                <a href="?page=<%= pagination.currentPage+1 %>"><i class="material-icons">chevron_right</i></a>
+            </li>
+        <% } %>
+    </ul>
+</div>

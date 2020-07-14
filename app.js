@@ -66,7 +66,7 @@ app.use((req, res, next) => {
     return next();
   }
 
-  User.findById(req.session.user)
+  return User.findById(req.session.user)
     .then((user) => {
       if (!user) {
         return next();
@@ -87,12 +87,13 @@ app.use(authRoutes);
 
 app.use(errorController.get404);
 app.use((error, req, res, next) => {
-  res.status(error.httpStatusCode).render('500', {
+  res.status(error.httpStatusCode || 500).render('500', {
     pageTitle: 'Error',
     path: '/500',
     errorMessage: error,
     isAuthenticated: req.session.isLoggedIn,
   });
+  next();
 });
 
 mongoose.connect(MONGODB_URI)

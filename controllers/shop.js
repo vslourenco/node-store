@@ -5,14 +5,31 @@ const Product = require('../models/product');
 const Order = require('../models/order');
 const User = require('../models/user');
 
+const ITEMS_PER_PAGE = 3;
+
 exports.getProducts = (req, res, next) => {
+  const page = +req.query.page || 1;
+  let totalPages;
   Product.find()
+    .countDocuments()
+    .then((numItems) => {
+      totalPages = Math.ceil(numItems / ITEMS_PER_PAGE);
+      return Product.find()
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE);
+    })
     .then((products) => {
       res.render('shop/product-list', {
         prods: products,
         pageTitle: 'All Products',
         path: '/products',
         isAuthenticated: req.session.isLoggedIn,
+        pagination: {
+          pages: totalPages,
+          currentPage: page,
+          hasNext: totalPages > page,
+          hasPrevious: page > 1,
+        },
       });
     })
     .catch((err) => {
@@ -41,13 +58,28 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
+  const page = +req.query.page || 1;
+  let totalPages;
   Product.find()
+    .countDocuments()
+    .then((numItems) => {
+      totalPages = Math.ceil(numItems / ITEMS_PER_PAGE);
+      return Product.find()
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE);
+    })
     .then((products) => {
       res.render('shop/index', {
         prods: products,
         pageTitle: 'Shop',
         path: '/',
         isAuthenticated: req.session.isLoggedIn,
+        pagination: {
+          pages: totalPages,
+          currentPage: page,
+          hasNext: totalPages > page,
+          hasPrevious: page > 1,
+        },
       });
     })
     .catch((err) => {

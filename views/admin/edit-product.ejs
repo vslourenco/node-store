@@ -16,12 +16,12 @@
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <div class="row">
                 <div class="input-field col s6">
-                    <input type="text" name="title" id="title" value="<% if (editing || errorMessage) { %><%= product.title %><% } %>" class="<%= validationErrors. find(e=> e.param === 'title') ? 'invalid' : '' %>">
+                    <input type="text" name="title" id="title" value="<% if (editing || errorMessage) { %><%= product.title %><% } %>" class="<%= validationErrors.find(e=> e.param === 'title') ? 'invalid' : '' %>">
                     <label for="title">Title</label>
                 </div>
                 <div class="file-field input-field col s6">
                     <div class="btn blue">
-                        <input type="file" name="image" id="image" class="<%= validationErrors. find(e=> e.param === 'image') ? 'invalid' : '' %>">
+                        <input type="file" name="image" id="image" class="<%= validationErrors.find(e=> e.param === 'image') ? 'invalid' : '' %>">
                         <label for="image">Image</label>
                     </div>
                     <div class="file-path-wrapper">
@@ -29,11 +29,11 @@
                     </div>
                 </div>
                 <div class="input-field col s6">
-                    <input type="number" name="price" id="price" step="0.01" value="<% if (editing || errorMessage) { %><%= product.price %><% } %>" class="<%= validationErrors. find(e=> e.param === 'price') ? 'invalid' : '' %>">
+                    <input type="number" name="price" id="price" step="0.01" value="<% if (editing || errorMessage) { %><%= product.price %><% } %>" class="<%= validationErrors.find(e=> e.param === 'price') ? 'invalid' : '' %>">
                     <label for="price">Price</label>
                 </div>
                 <div class="input-field col s12">
-                  <textarea id="description" name="description" class="materialize-textarea <%= validationErrors. find(e=> e.param === 'description') ? 'invalid' : '' %>"><% if (editing || errorMessage) { %><%= product.description %><% } %></textarea>
+                  <textarea id="description" name="description" class="materialize-textarea <%= validationErrors.find(e=> e.param === 'description') ? 'invalid' : '' %>"><% if (editing || errorMessage) { %><%= product.description %><% } %></textarea>
                   <label for="description">Description</label>
                 </div>
 
