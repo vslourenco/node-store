@@ -1,3 +1,6 @@
+const path = require('path');
+const fs = require('fs');
+const PDFDocument = require('pdfkit');
 const Product = require('../models/product');
 const Order = require('../models/order');
 const User = require('../models/user');
@@ -140,6 +143,87 @@ exports.getOrders = (req, res, next) => {
         orders,
         isAuthenticated: req.session.isLoggedIn,
       });
+    })
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
+};
+
+exports.getInvoice = (req, res, next) => {
+  const { orderId } = req.params;
+
+  Order.findById(orderId)
+    .then((order) => {
+      if (!order) {
+        throw new Error('No order found!');
+      }
+      if (order.user.userId.toString() !== req.user._id.toString()) {
+        throw new Error('Unauthorized!');
+      }
+      const invoiceName = `invoice-${orderId}.pdf`;
+      const invoicePath = path.join('data', 'invoices', invoiceName);
+
+      const pdfInvoice = new PDFDocument();
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `inline; filename="${invoiceName}"`);
+      pdfInvoice.pipe(fs.createWriteStream(invoicePath));
+      pdfInvoice.pipe(res);
+
+      pdfInvoice.rect(0, pdfInvoice.y, 300, 85)
+        .fill([3, 27, 123]);
+      pdfInvoice.moveDown();
+      pdfInvoice.moveDown();
+      let currentY = pdfInvoice.y;
+      pdfInvoice.font('Times-Bold', 50).fillColor('white').text('INVOICE', 0, currentY, { width: 300, align: 'center' });
+      pdfInvoice.image('./public/img/logo-color.png', 380, currentY, { width: 200 });
+      pdfInvoice.moveDown();
+
+      pdfInvoice.font('Times-Bold', 20).fillColor('black').text(`ORDER #${orderId}`, 72, pdfInvoice.y, { align: 'justify' });
+      pdfInvoice.moveDown();
+      pdfInvoice.moveDown();
+
+      currentY = pdfInvoice.y;
+      let currentX = pdfInvoice.x;
+      pdfInvoice.rect(currentX, currentY - 5, 500, 20)
+        .fill([3, 27, 123]);
+      pdfInvoice
+        .fontSize(14)
+        .fillColor([255, 255, 255])
+        .text(' Product', currentX, currentY, { width: 200, align: 'justify' })
+        .text('Price', currentX + 200, currentY, { width: 100, align: 'justify' })
+        .text('Quantity', currentX + 300, currentY, { width: 100, align: 'justify' })
+        .text('Total', currentX + 400, currentY, { width: 100, align: 'justify' })
+        .moveDown();
+
+      currentX = 72;
+      let totalPrice = 0;
+      order.products.forEach((prod) => {
+        currentY = pdfInvoice.y;
+        pdfInvoice
+          .fontSize(13)
+          .fillColor('black')
+          .text(prod.product.title, currentX, currentY, { width: 200, align: 'justify' })
+          .text(`$ ${prod.product.price}`, currentX + 200, currentY, { width: 100, align: 'justify' })
+          .text(prod.quantity, currentX + 300, currentY, { width: 100, align: 'justify' })
+          .text(`$ ${prod.product.price * prod.quantity}`, currentX + 400, currentY, { width: 100, align: 'justify' })
+          .moveDown();
+        totalPrice += prod.product.price * prod.quantity;
+      });
+
+      currentY = pdfInvoice.y;
+      pdfInvoice.rect(currentX + 300, currentY - 5, 200, 20)
+        .fill([3, 27, 123]);
+      pdfInvoice
+        .fillColor([255, 255, 255])
+        .text('Total', currentX + 300, currentY, { width: 100, align: 'justify' })
+        .text(`$ ${totalPrice}`, currentX + 400, currentY, { width: 100, align: 'justify' });
+
+      pdfInvoice.end();
+
+      // const file = fs.createReadStream(invoicePath);
+      // file.pipe(res);
     })
     .catch((err) => {
       const error = new Error(err);

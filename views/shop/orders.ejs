@@ -9,7 +9,7 @@
             <% } else { %>
                 <% orders.forEach(order => { %>
                     <ul class="collection with-header">
-                        <li class="collection-header"><h5>Order #<%= order._id %></h5></li>
+                        <li class="collection-header"><h5>Order #<%= order._id %><a href="/orders/invoice/<%= order._id %>" target="_new" class="waves-effect waves-light btn-small right">Invoice</a></h5></li>
                         <% order.products.forEach(item => { %>
                             <li class="collection-item">
                                 <i class="material-icons">check</i><%= item.product.title %> (<%= item.quantity %>)
