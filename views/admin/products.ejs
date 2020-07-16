@@ -8,7 +8,7 @@
         <% if (prods.length > 0) { %>
             <div class="row">
                 <% for (let product of prods) { %>
-                    <div class="col s12 m4">
+                    <article class="col s12 m4">
                         <div class="card">
                             <div class="card-image">
                                 <img src="/<%= product.imageUrl %>" alt="<%= product.title %>">
@@ -19,15 +19,13 @@
                                 <p><%= product.description %></p>
                             </div>
                             <div class="card-action">
-                                <form action="/admin/delete-product" method="POST">
-                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                    <a class="waves-effect waves-light btn blue" href="/admin/edit-product/<%= product._id %>?edit=true"><i class="material-icons left">edit</i>Edit</a>
-                                    <input type="hidden" value="<%= product._id %>" name="productId">
-                                    <button class="waves-effect waves-light btn red" type="submit"><i class="material-icons left">delete</i>Delete</button>
-                                </form>
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                <a class="waves-effect waves-light btn blue" href="/admin/edit-product/<%= product._id %>?edit=true"><i class="material-icons left">edit</i>Edit</a>
+                                <input type="hidden" value="<%= product._id %>" name="productId">
+                                <button class="waves-effect waves-light btn red" onclick="deleteProduct(this)" type="button"><i class="material-icons left">delete</i>Delete</button>
                             </div>
                         </div>
-                    </div>
+                    </article>
                 <% } %>
             </div>
         <% } else { %>
@@ -35,3 +33,4 @@
         <% } %>
     </main>
 <%- include('../partials/end.ejs') %>
+<script src="/js/admin.js"></script>
