@@ -146,7 +146,7 @@ exports.getProducts = (req, res, next) => {
     });
 };
 
-exports.deleteProduct = (req, res, next) => {
+exports.deleteProduct = (req, res) => {
   const prodId = req.params.productId;
   Product.findById(prodId)
     .then((product) => {
@@ -157,9 +157,9 @@ exports.deleteProduct = (req, res, next) => {
       return Product.deleteOne({ _id: prodId, userId: req.session.user });
     })
     .then(() => {
-      res.status(200).json({message: "Success"});
+      res.status(200).json({ message: 'Success' });
     })
     .catch((err) => {
-      res.status(500).json({message: "Deleting product failed."});
+      res.status(500).json({ message: 'Deleting product failed.', error: err });
     });
 };

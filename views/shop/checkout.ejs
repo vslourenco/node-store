@@ -1,0 +1,42 @@
+<%- include('../partials/head.ejs') %>
+    </head>
+
+    <body>
+        <%- include('../partials/navigation.ejs') %>
+        <main class="container">
+            <% if (products.length > 0) { %>
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>Cart Products</h4></li>
+                    <% products.forEach(p => { %>
+                    <li class="collection-item">
+                        <div>
+                            <form action="/cart-delete-item" method="POST">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <%= p.productId.title %> (Quantity: <%= p.quantity %>)
+                                <br/>
+                                <br/>
+                            </form>
+                        </div>
+                    </li>        
+                    <% }) %>
+                </ul>
+                <h4>Total: $<%= totalSum %></h4>
+                <br/>
+                <button type="submit" id="order-btn" class="btn">Checkout</button>
+            <% } else { %>
+                <h1 class="header center blue-text">No Products in Cart!</h1>
+            <% } %>
+        </main>
+
+        <script src="https://js.stripe.com/v3/"></script>
+        <script>
+            var stripe = Stripe('pk_test_51H6JO5GxwrfU4lasaid8zNau9NfIci3P1OgiGyB338gXKR8QYYpSKiDqp2by2WnCtNE69VUCZjAOTFjiPjxJWdDF00MkJ4NLTa');
+            var orderBtn = document.getElementById('order-btn');
+            orderBtn.addEventListener('click', function(){
+                stripe.redirectToCheckout({
+                    sessionId: '<%= sessionId %>'
+                });
+            });
+        </script>
+
+        <%- include('../partials/end.ejs') %>

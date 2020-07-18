@@ -1,6 +1,8 @@
 const path = require('path');
 const fs = require('fs');
 const PDFDocument = require('pdfkit');
+const stripe = require('stripe')('sk_test_51H6JO5GxwrfU4laszVslSHqCBZxGhVYO1JNjOIIJa8XDUvbSYYczGvUq3zhX6wNncHzQGdJlYW3E2vdrGpb801gH00c9b90g9n');
+
 const Product = require('../models/product');
 const Order = require('../models/order');
 const User = require('../models/user');
@@ -137,6 +139,35 @@ exports.postCartDeleteProduct = (req, res, next) => {
     });
 };
 
+exports.getCheckoutSuccess = (req, res, next) => {
+  req.session.user = new User().init(req.session.user);
+  req.session.user.populate('cart.items.productId')
+    .execPopulate()
+    .then((user) => {
+      const products = user.cart.items.map((item) => ({
+        product: { ...item.productId._doc },
+        quantity: item.quantity,
+      }));
+      const order = new Order({
+        user: {
+          email: req.session.user.email,
+          userId: req.session.user,
+        },
+        products,
+      });
+      return order.save();
+    })
+    .then(() => req.session.user.clearCart())
+    .then(() => {
+      res.redirect('/orders');
+    })
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
+};
+
 exports.postOrder = (req, res, next) => {
   req.session.user = new User().init(req.session.user);
   req.session.user.populate('cart.items.productId')
@@ -264,10 +295,42 @@ exports.getInvoice = (req, res, next) => {
     });
 };
 
-exports.getCheckout = (req, res) => {
-  res.render('shop/checkout', {
-    path: '/checkout',
-    pageTitle: 'Checkout',
-    isAuthenticated: req.session.isLoggedIn,
-  });
+exports.getCheckout = (req, res, next) => {
+  let products;
+  let total;
+
+  req.session.user = new User().init(req.session.user);
+  req.session.user.populate('cart.items.productId')
+    .execPopulate()
+    .then((user) => {
+      products = user.cart.items;
+      total = products.reduce((sum, p) => sum + (p.quantity * p.productId.price), 0);
+      return stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: products.map((p) => ({
+          name: p.productId.title,
+          description: p.productId.description,
+          amount: p.productId.price * 100,
+          currency: 'usd',
+          quantity: p.quantity,
+        })),
+        success_url: `${req.protocol}://${req.get('host')}/checkout/success`,
+        cancel_url: `${req.protocol}://${req.get('host')}/checkout/cancel`,
+      });
+    })
+    .then((session) => {
+      res.render('shop/checkout', {
+        path: '/checkout',
+        pageTitle: 'Checkout',
+        isAuthenticated: req.session.isLoggedIn,
+        products,
+        totalSum: total,
+        sessionId: session.id,
+      });
+    })
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
